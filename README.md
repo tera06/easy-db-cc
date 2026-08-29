@@ -6,39 +6,87 @@
             - Status start();
         - private
             - Status print_prompt();
-            - std::pair<std::unique_ptr\<ReplUserInput\>,Status> read_user_input();
-            - Status print_user_output(ReplUserOutput&)
-            - Status print_row(Row&);
-        
-    - ReplUserInput Class
-    - ReplUserOutput Class
+            - Result\<UserInput\> read_user_input();
+            - Status print_user_output(UserOutput&);
+            - using UserInput = std::string;
+            - using UserOutput = std::string;
 
 
 - command Directory
-    - UserInput Class
-    - UserOutput Class
     - Command Class
         - public
-            - std::pair<std::unique_ptr\<UserOutput\>,Status> execute(UserInput&);
+            - Result\<CommandResult\> execute(const UserCommand&);
+            - using UserCommand = std::string;
+            - using  CommandResult= std::string;
+        - private
+            CommandParser parser_;
+            CommandExecutor executor_;
+            
     - CommandParser Class
-        -  std::pair<std::unique_ptr\<CommandStatement\>,Status> parse(UserInput&)
-    - CommandExecutor
-        -  std::pair<std::unique_ptr\<UserOutput\>,Status> execute(CommandStatement&)
-    - CommandStatement
+        - public
+            -  Result\<std::unique_ptr\<CommandStatement\>\> parse(const ParseTarget&)
+            - using ParseTarget = std::string;
+    - CommandExecutor Class
+        - public
+            -  Result\<std::unique_ptr\<CommandResult\>\> execute(const CommandStatement&)
+            - using CommandResult = std::stirng;
+    - CommandStatement Class
+        - public
+            - enum Class StatementType statement_type_;
+            - Row insert_row;
 
 - database Directory
     - Database Class
-        - std::pair<std::unique_ptr\<Table\>,Status> open(String);
-    - Table
-        - Status insert(Row&)
-        - vector<Row&> select_all()
+        - public
+            - static Result\<std::unique_ptr\<Table\>\> open(const String&);
+    - Table Class
+        - public
+            - Status insert(const Row&)
+            - vector<Row&> select_all()
+        - private
+            - std::unique_ptr\<Btree\> btree_;
+    - Row Class
+        - public
+            - const uint32_t id;
+            - const std::string username;
+            - const std::string email;
     - btree SubDirectory
+        - Btree Class
+            - public
+                - Status insert(Value&);
+                - Result\<std::vector\<std::unique_ptr<Value\>
+                \>\> get_all();
+                - using Value = std::array<std::byte, size> 
+            - private
+                - std::unique<PageManager>  page_manager_;
+        - LeafNode Class
+            - public
+                - page_内部のgetter及びsetter
+            - private
+                - const Page& page_;
+        - InternalNode Class
+            - public
+                - page_内部のgetter及びsetter
+            - private 
+                - const Page& page_;
     - page SubDirectory
+        - PageManager Class
+            - public
+                - using PageId = std::uint32_t;
+                - Result<Page&>　get_page(PageId);
+                - Status flush(PageId);
+            - private
+                - const std::string filename;
+                - std::vector\<std::unique_ptr\<Page\>\> pages;
+        - Page Class
+            - public 
+                - std::array<std::byte, size> data_;
 
 - Status Directory
     - Status Class
         - bool is_ok();
         - bool is_err();
+    - template \<typename T \> using Result = std::pair<T, Status>
 
 
 
