@@ -2,6 +2,8 @@
 #define EASY_DB_RESULT_H_
 
 #include <memory>
+#include <stdexcept>
+
 #include "status.h"
 namespace easy_db
 {
@@ -71,11 +73,10 @@ namespace easy_db
 
         const T &value() const
         {
-            return *p_value_;
-        }
-
-        T &value()
-        {
+            if (!p_value_)
+            {
+                throw std::logic_error("The value pointer inside the result class is nullptr.");
+            }
             return *p_value_;
         }
 

@@ -19,6 +19,7 @@ find_package(CppUTest REQUIRED)
 add_executable(easy_db_test
     tests/main.cc
     tests/common/status_test.cc
+     tests/common/result_test.cc
 )
 
 target_link_libraries(easy_db_test
