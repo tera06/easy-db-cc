@@ -6,7 +6,11 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_library(easy_db src/common/status.cc)
+add_library(easy_db 
+    src/common/status.cc
+    src/page/page.cc
+)
+
 target_include_directories(easy_db
     PUBLIC
         ${PROJECT_SOURCE_DIR}/src
@@ -19,7 +23,7 @@ find_package(CppUTest REQUIRED)
 add_executable(easy_db_test
     tests/main.cc
     tests/common/status_test.cc
-     tests/common/result_test.cc
+    tests/common/result_test.cc
 )
 
 target_link_libraries(easy_db_test

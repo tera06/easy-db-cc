@@ -17,6 +17,11 @@ namespace easy_db
         return code_ == StatusCode::Ok;
     }
 
+    bool Status::is_out_of_range() const
+    {
+        return code_ == StatusCode::OutOfRange;
+    }
+
     bool Status::is_other_error() const
     {
         return code_ == StatusCode::OtherError;

@@ -14,15 +14,18 @@ namespace easy_db
         Status &operator=(Status &&status) noexcept = default;
 
         static Status ok();
+        static Status out_of_range();
         static Status other_error();
 
         bool is_ok() const;
+        bool is_out_of_range() const;
         bool is_other_error() const;
 
     private:
         enum class StatusCode
         {
             Ok,
+            OutOfRange,
             OtherError,
         };
         explicit Status(const StatusCode code) : code_(code) {}
