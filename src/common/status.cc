@@ -7,6 +7,11 @@ namespace easy_db
         return Status(StatusCode::Ok);
     }
 
+    Status Status::out_of_range()
+    {
+        return Status(StatusCode::OutOfRange);
+    }
+
     Status Status::other_error()
     {
         return Status(StatusCode::OtherError);
