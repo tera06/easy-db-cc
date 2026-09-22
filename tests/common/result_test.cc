@@ -160,4 +160,125 @@ namespace easy_db
         auto result = Result<std::string>::ok("result");
         CHECK_FALSE(result.is_error());
     }
+
+    TEST_GROUP(ResultReferenceTestGroup){};
+
+    TEST(ResultReferenceTestGroup, OkAndValue_ReturnOkResultAndGetValue)
+    {
+        {
+            int value = 1;
+
+            auto result = Result<int &>::ok(value);
+
+            CHECK_TRUE(result.status().is_ok());
+            CHECK_TRUE(result.value() == 1);
+            CHECK_TRUE(&result.value() == &value);
+        }
+
+        {
+            std::string value = "result";
+
+            auto result = Result<std::string &>::ok(value);
+
+            CHECK_TRUE(result.status().is_ok());
+            CHECK_TRUE(result.value() == "result");
+            CHECK_TRUE(&result.value() == &value);
+        }
+    }
+
+    TEST(ResultReferenceTestGroup, OkAndValue_ModifyOriginalValue)
+    {
+        int value = 1;
+
+        auto result = Result<int &>::ok(value);
+
+        result.value() = 2;
+
+        CHECK_TRUE(value == 2);
+        CHECK_TRUE(result.value() == 2);
+    }
+
+    TEST(ResultReferenceTestGroup, ErrorAndValue_ReturnErrorResultAndNotGetValue)
+    {
+        auto result = Result<std::string &>::error(Status::other_error());
+
+        CHECK_TRUE(result.status().is_other_error());
+        CHECK_THROWS(std::logic_error, result.value());
+    }
+
+    TEST(ResultReferenceTestGroup, IsOk_IfStatusIsOkReturnTrue)
+    {
+        int value = 1;
+
+        auto result = Result<int &>::ok(value);
+
+        CHECK_TRUE(result.is_ok());
+    }
+
+    TEST(ResultReferenceTestGroup, IsOk_IfStatusIsErrorReturnFalse)
+    {
+        auto result = Result<int &>::error(Status::other_error());
+
+        CHECK_FALSE(result.is_ok());
+    }
+
+    TEST(ResultReferenceTestGroup, IsError_IfStatusIsNotOkReturnTrue)
+    {
+        auto result = Result<int &>::error(Status::other_error());
+
+        CHECK_TRUE(result.is_error());
+    }
+
+    TEST(ResultReferenceTestGroup, IsError_IfStatusIsOkReturnFalse)
+    {
+        int value = 1;
+
+        auto result = Result<int &>::ok(value);
+
+        CHECK_FALSE(result.is_error());
+    }
+
+    TEST_GROUP(ResultVoidTestGroup){};
+
+    TEST(ResultVoidTestGroup, Ok_ReturnOkResult)
+    {
+        auto result = Result<void>::ok();
+
+        CHECK_TRUE(result.status().is_ok());
+    }
+
+    TEST(ResultVoidTestGroup, Error_ReturnErrorResult)
+    {
+        auto result = Result<void>::error(Status::other_error());
+
+        CHECK_TRUE(result.status().is_other_error());
+    }
+
+    TEST(ResultVoidTestGroup, IsOk_IfStatusIsOkReturnTrue)
+    {
+        auto result = Result<void>::ok();
+
+        CHECK_TRUE(result.is_ok());
+    }
+
+    TEST(ResultVoidTestGroup, IsOk_IfStatusIsErrorReturnFalse)
+    {
+        auto result = Result<void>::error(Status::other_error());
+
+        CHECK_FALSE(result.is_ok());
+    }
+
+    TEST(ResultVoidTestGroup, IsError_IfStatusIsNotOkReturnTrue)
+    {
+        auto result = Result<void>::error(Status::other_error());
+
+        CHECK_TRUE(result.is_error());
+    }
+
+    TEST(ResultVoidTestGroup, IsError_IfStatusIsOkReturnFalse)
+    {
+        auto result = Result<void>::ok();
+
+        CHECK_FALSE(result.is_error());
+    }
 }

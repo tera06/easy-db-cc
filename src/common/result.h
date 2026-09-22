@@ -87,5 +87,87 @@ namespace easy_db
         Status status_;
         std::unique_ptr<T> p_value_;
     };
+
+    template <typename T>
+    class Result<T &>
+    {
+    public:
+        static Result ok(T &value)
+        {
+            return Result(Status::ok(), &value);
+        }
+
+        static Result error(const Status &status)
+        {
+            return Result(status, nullptr);
+        }
+
+        bool is_ok() const
+        {
+            return status_.is_ok();
+        }
+
+        bool is_error() const
+        {
+            return !status_.is_ok();
+        }
+
+        Status status() const
+        {
+            return status_;
+        }
+
+        T &value() const
+        {
+            if (!p_value_)
+            {
+                throw std::logic_error("The value pointer inside the result class is nullptr.");
+            }
+            return *p_value_;
+        }
+
+    private:
+        explicit Result(const Status &status, T *p_value) : status_(status), p_value_(p_value)
+        {
+        }
+        Status status_;
+        T *p_value_;
+    };
+
+    template <>
+    class Result<void>
+    {
+    public:
+        static Result ok()
+        {
+            return Result(Status::ok());
+        }
+
+        static Result error(const Status &status)
+        {
+            return Result(status);
+        }
+
+        bool is_ok() const
+        {
+            return status_.is_ok();
+        }
+
+        bool is_error() const
+        {
+            return !status_.is_ok();
+        }
+
+        Status status() const
+        {
+            return status_;
+        }
+
+    private:
+        explicit Result(const Status &status) : status_(status)
+        {
+        }
+        Status status_;
+    };
 }
 #endif
