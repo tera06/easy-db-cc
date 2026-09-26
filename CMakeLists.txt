@@ -9,6 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_library(easy_db 
     src/common/status.cc
     src/page/page.cc
+    src/page/page_manager.cc
 )
 
 target_include_directories(easy_db

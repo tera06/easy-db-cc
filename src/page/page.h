@@ -7,10 +7,9 @@ namespace easy_db
 {
     class Page
     {
-    private:
+    public:
         static constexpr std::size_t kPageSize = 4096;
 
-    public:
         using iterator = std::array<std::byte, kPageSize>::iterator;
         using const_iterator = std::array<std::byte, kPageSize>::const_iterator;
 
