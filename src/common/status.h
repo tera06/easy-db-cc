@@ -23,7 +23,7 @@ namespace easy_db
         bool is_other_error() const;
         bool is_out_of_range() const;
         bool is_invalid_page_id() const;
-        bool is_faile_open_file() const;
+        bool is_fail_open_file() const;
         bool is_file_not_exist() const;
         bool is_not_find_page() const;
         bool is_fail_file_size() const;

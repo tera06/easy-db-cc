@@ -21,6 +21,16 @@ namespace easy_db
         return Status(StatusCode::InvalidPageId);
     }
 
+    Status Status::fail_open_file()
+    {
+        return Status(StatusCode::FailOpenFile);
+    }
+
+    Status Status::file_not_exist()
+    {
+        return Status(StatusCode::FileNotExist);
+    }
+
     Status Status::not_find_page()
     {
         return Status(StatusCode::NotFindPage);
@@ -64,6 +74,16 @@ namespace easy_db
     bool Status::is_invalid_page_id() const
     {
         return code_ == StatusCode::InvalidPageId;
+    }
+
+    bool Status::is_fail_open_file() const
+    {
+        return code_ == StatusCode::FailOpenFile;
+    }
+
+    bool Status::is_file_not_exist() const
+    {
+        return code_ == StatusCode::FileNotExist;
     }
 
     bool Status::is_not_find_page() const
