@@ -7,12 +7,26 @@ namespace easy_db
     PageManager::PageManager(const std::string &filename) : filename_(filename)
     {
         auto result_num_pages = get_num_pages();
-        if (!result_num_pages.is_ok())
+        if (result_num_pages.is_ok())
         {
-            throw std::logic_error("The file does not exist.");
+            next_page_id_ = result_num_pages.value();
+            return;
         }
 
-        next_page_id_ = result_num_pages.value();
+        if (result_num_pages.status().is_file_not_exist())
+        {
+            std::ofstream file(filename_, std::ios::binary);
+
+            if (!file)
+            {
+                throw std::logic_error("Failed to create the database file.");
+            }
+
+            next_page_id_ = 0;
+            return;
+        }
+
+        throw std::logic_error("Failed to get the number of pages.");
     }
 
     Result<PageManager::page_id_t> PageManager::create_new_page()
@@ -39,49 +53,39 @@ namespace easy_db
             return Result<Page &>::ok(*page);
         }
 
-        auto result_num_pages = get_num_pages();
-        if (!result_num_pages.is_ok())
-        {
-            return Result<Page &>::error(result_num_pages.status());
-        }
-
-        auto num_pages = result_num_pages.value();
-
         auto page_ptr = std::make_unique<Page>();
 
-        if (page_id < num_pages)
+        std::ifstream file(filename_, std::ios::binary);
+        if (!file)
         {
-            std::ifstream file(filename_, std::ios::binary);
-            if (!file)
-            {
-                return Result<Page &>::error(Status::fail_open_file());
-            }
+            return Result<Page &>::error(Status::fail_open_file());
+        }
 
-            std::streamoff offset = Page::kPageSize * page_id;
-            file.seekg(offset, std::ios::beg);
-            if (!file)
-            {
-                return Result<Page &>::error(Status::fail_seek());
-            }
+        std::streamoff offset = Page::kPageSize * page_id;
+        file.seekg(offset, std::ios::beg);
+        if (!file)
+        {
+            return Result<Page &>::error(Status::fail_seek());
+        }
 
-            auto page_iter_result = page_ptr->iterator_at(0);
-            if (!page_iter_result.is_ok())
-            {
-                return Result<Page &>::error(page_iter_result.status());
-            }
+        auto page_iter_result = page_ptr->iterator_at(0);
+        if (page_iter_result.is_error())
+        {
+            return Result<Page &>::error(page_iter_result.status());
+        }
 
-            auto page_iter = page_iter_result.value();
-            file.read(reinterpret_cast<char *>(&*page_iter), Page::kPageSize);
-            if (!file)
-            {
-                return Result<Page &>::error(Status::fail_read_file());
-            }
+        auto page_iter = page_iter_result.value();
+        file.read(reinterpret_cast<char *>(&*page_iter), Page::kPageSize);
+        if (!file)
+        {
+            return Result<Page &>::error(Status::fail_read_file());
         }
 
         pages_.emplace(page_id, std::move(page_ptr));
 
         return Result<Page &>::ok(*pages_.at(page_id));
     }
+
     Result<void> PageManager::flush(const PageManager::page_id_t page_id)
     {
         auto pages_iter = pages_.find(page_id);
@@ -91,7 +95,7 @@ namespace easy_db
         }
         auto &page = pages_iter->second;
 
-        std::ofstream file(filename_, std::ios::in | std::ios::out | std::ios::binary);
+        std::fstream file(filename_, std::ios::in | std::ios::out | std::ios::binary);
         if (!file)
         {
             return Result<void>::error(Status::fail_open_file());
@@ -105,7 +109,7 @@ namespace easy_db
         }
 
         auto result_page_iter = page->iterator_at(0);
-        if (!result_page_iter.is_ok())
+        if (result_page_iter.is_error())
         {
             return Result<void>::error(result_page_iter.status());
         }
