@@ -11,8 +11,8 @@ namespace easy_db
     class PageManager
     {
     public:
-        using page_id_t = std::uint64_t;
-        using num_pages_t = std::uint64_t;
+        using page_id_t = std::uint32_t;
+        using num_pages_t = std::uint32_t;
 
         PageManager(const std::string &filename);
 

@@ -74,6 +74,18 @@ namespace easy_db
         CHECK_TRUE(status.is_fail_write_file());
     }
 
+    TEST(StatusTestGroup, InvalidNodeType)
+    {
+        auto status = Status::invalid_node_type();
+        CHECK_TRUE(status.is_invalid_node_type());
+    }
+
+    TEST(StatusTestGroup, InvalidIsRoot)
+    {
+        auto status = Status::invalid_is_root();
+        CHECK_TRUE(status.is_invalid_is_root());
+    }
+
     TEST(StatusTestGroup, IsOk_ReturnFalseIfStatusIsNotOk)
     {
         const auto status = Status::other_error();
@@ -138,6 +150,18 @@ namespace easy_db
     {
         const auto status = Status::ok();
         CHECK_FALSE(status.is_fail_write_file());
+    }
+
+    TEST(StatusTestGroup, IsInvalidNodeType_ReturnFalseIfStatusIsNotInvalidNodeType)
+    {
+        const auto status = Status::ok();
+        CHECK_FALSE(status.is_invalid_node_type());
+    }
+
+    TEST(StatusTestGroup, IsInvalidIsRoot_ReturnFalseIfStatusIsNotInvalidIsRoot)
+    {
+        const auto status = Status::ok();
+        CHECK_FALSE(status.is_invalid_is_root());
     }
 
 }

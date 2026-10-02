@@ -10,6 +10,7 @@ add_library(easy_db
     src/common/status.cc
     src/page/page.cc
     src/page/page_manager.cc
+    src/btree/node.cc
 )
 
 target_include_directories(easy_db

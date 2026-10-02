@@ -55,6 +55,15 @@ namespace easy_db
     {
         return Status(StatusCode::FailWriteFile);
     }
+    Status Status::invalid_node_type()
+    {
+        return Status(StatusCode::InvalidNodeType);
+    }
+
+    Status Status::invalid_is_root()
+    {
+        return Status(StatusCode::InvalidIsRoot);
+    }
 
     bool Status::is_ok() const
     {
@@ -109,6 +118,16 @@ namespace easy_db
     bool Status::is_fail_write_file() const
     {
         return code_ == StatusCode::FailWriteFile;
+    }
+
+    bool Status::is_invalid_node_type() const
+    {
+        return code_ == StatusCode::InvalidNodeType;
+    }
+
+    bool Status::is_invalid_is_root() const
+    {
+        return code_ == StatusCode::InvalidIsRoot;
     }
 
 }

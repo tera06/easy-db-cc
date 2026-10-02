@@ -18,6 +18,8 @@ namespace easy_db
         static Status fail_seek();
         static Status fail_read_file();
         static Status fail_write_file();
+        static Status invalid_node_type();
+        static Status invalid_is_root();
 
         bool is_ok() const;
         bool is_other_error() const;
@@ -30,6 +32,8 @@ namespace easy_db
         bool is_fail_seek() const;
         bool is_fail_read_file() const;
         bool is_fail_write_file() const;
+        bool is_invalid_node_type() const;
+        bool is_invalid_is_root() const;
 
     private:
         enum class StatusCode
@@ -45,6 +49,8 @@ namespace easy_db
             FailSeek,
             FailReadFile,
             FailWriteFile,
+            InvalidNodeType,
+            InvalidIsRoot,
         };
         explicit Status(const StatusCode code) : code_(code) {}
         StatusCode code_;
