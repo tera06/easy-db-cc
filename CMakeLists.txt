@@ -28,6 +28,7 @@ add_executable(easy_db_test
     tests/common/result_test.cc
     tests/page/page_test.cc
     tests/page/page_manager_test.cc
+    tests/btree/node_test.cc
 )
 
 target_link_libraries(easy_db_test
