@@ -11,6 +11,7 @@ add_library(easy_db
     src/page/page.cc
     src/page/page_manager.cc
     src/btree/node.cc
+    src/btree/leaf_node.cc
 )
 
 target_include_directories(easy_db
@@ -29,6 +30,7 @@ add_executable(easy_db_test
     tests/page/page_test.cc
     tests/page/page_manager_test.cc
     tests/btree/node_test.cc
+   tests/btree/leaf_node_test.cc
 )
 
 target_link_libraries(easy_db_test

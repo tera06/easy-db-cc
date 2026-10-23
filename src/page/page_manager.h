@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <limits>
 
 #include "common/result.h"
 #include "page/page.h"
@@ -13,6 +14,8 @@ namespace easy_db
     public:
         using page_id_t = std::uint32_t;
         using num_pages_t = std::uint32_t;
+
+        static constexpr page_id_t kInvalidPageId = std::numeric_limits<page_id_t>::max();
 
         PageManager(const std::string &filename);
 

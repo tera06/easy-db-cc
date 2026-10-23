@@ -65,6 +65,11 @@ namespace easy_db
         return Status(StatusCode::InvalidIsRoot);
     }
 
+    Status Status::invalid_argument()
+    {
+        return Status(StatusCode::InvalidArgument);
+    }
+
     bool Status::is_ok() const
     {
         return code_ == StatusCode::Ok;
@@ -128,6 +133,11 @@ namespace easy_db
     bool Status::is_invalid_is_root() const
     {
         return code_ == StatusCode::InvalidIsRoot;
+    }
+
+    bool Status::is_invalid_argument() const
+    {
+        return code_ == StatusCode::InvalidArgument;
     }
 
 }

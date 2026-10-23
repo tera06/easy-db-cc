@@ -20,6 +20,7 @@ namespace easy_db
         static Status fail_write_file();
         static Status invalid_node_type();
         static Status invalid_is_root();
+        static Status invalid_argument();
 
         bool is_ok() const;
         bool is_other_error() const;
@@ -34,6 +35,7 @@ namespace easy_db
         bool is_fail_write_file() const;
         bool is_invalid_node_type() const;
         bool is_invalid_is_root() const;
+        bool is_invalid_argument() const;
 
     private:
         enum class StatusCode
@@ -51,6 +53,7 @@ namespace easy_db
             FailWriteFile,
             InvalidNodeType,
             InvalidIsRoot,
+            InvalidArgument,
         };
         explicit Status(const StatusCode code) : code_(code) {}
         StatusCode code_;

@@ -86,6 +86,12 @@ namespace easy_db
         CHECK_TRUE(status.is_invalid_is_root());
     }
 
+    TEST(StatusTestGroup, InvalidArgument)
+    {
+        auto status = Status::invalid_argument();
+        CHECK_TRUE(status.is_invalid_argument());
+    }
+
     TEST(StatusTestGroup, IsOk_ReturnFalseIfStatusIsNotOk)
     {
         const auto status = Status::other_error();
@@ -162,6 +168,12 @@ namespace easy_db
     {
         const auto status = Status::ok();
         CHECK_FALSE(status.is_invalid_is_root());
+    }
+
+    TEST(StatusTestGroup, IsInvalidArgument_ReturnFalseIfStatusIsNotInvalidArgument)
+    {
+        const auto status = Status::ok();
+        CHECK_FALSE(status.is_invalid_argument());
     }
 
 }

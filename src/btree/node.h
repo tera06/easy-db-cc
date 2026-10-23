@@ -19,7 +19,7 @@ namespace easy_db
         Result<PageManager::page_id_t> parent_id() const;
         Result<void> set_parent_id(PageManager::page_id_t parent_id);
 
-    private:
+    protected:
         Page &page_;
 
         static constexpr std::size_t kNodeTypeSize = sizeof(std::byte);
@@ -28,5 +28,6 @@ namespace easy_db
         static constexpr std::size_t kIsRootOffset = kNodeTypeOffset + kNodeTypeSize;
         static constexpr std::size_t kParentNodeIdSize = sizeof(PageManager::page_id_t);
         static constexpr std::size_t kParentNodeIdOffset = kIsRootOffset + kIsRootSize;
+        static constexpr std::size_t kCommonHeaderSize = kNodeTypeSize + kIsRootSize + kParentNodeIdSize;
     };
 }
