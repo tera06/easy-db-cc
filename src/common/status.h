@@ -21,6 +21,7 @@ namespace easy_db
         static Status invalid_node_type();
         static Status invalid_is_root();
         static Status invalid_argument();
+        static Status key_not_exist();
 
         bool is_ok() const;
         bool is_other_error() const;
@@ -36,6 +37,7 @@ namespace easy_db
         bool is_invalid_node_type() const;
         bool is_invalid_is_root() const;
         bool is_invalid_argument() const;
+        bool is_key_not_exist() const;
 
     private:
         enum class StatusCode
@@ -54,6 +56,7 @@ namespace easy_db
             InvalidNodeType,
             InvalidIsRoot,
             InvalidArgument,
+            KeyNotExist,
         };
         explicit Status(const StatusCode code) : code_(code) {}
         StatusCode code_;

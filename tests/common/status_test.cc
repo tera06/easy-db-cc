@@ -92,6 +92,12 @@ namespace easy_db
         CHECK_TRUE(status.is_invalid_argument());
     }
 
+    TEST(StatusTestGroup, KeyNotExist)
+    {
+        const auto status = Status::key_not_exist();
+        CHECK_TRUE(status.is_key_not_exist());
+    }
+
     TEST(StatusTestGroup, IsOk_ReturnFalseIfStatusIsNotOk)
     {
         const auto status = Status::other_error();
@@ -174,6 +180,12 @@ namespace easy_db
     {
         const auto status = Status::ok();
         CHECK_FALSE(status.is_invalid_argument());
+    }
+
+    TEST(StatusTestGroup, IsKeyNotExist_ReturnFalseIfStatusIsNotKeyNotExist)
+    {
+        const auto status = Status::ok();
+        CHECK_FALSE(status.is_key_not_exist());
     }
 
 }

@@ -70,6 +70,11 @@ namespace easy_db
         return Status(StatusCode::InvalidArgument);
     }
 
+    Status Status::key_not_exist()
+    {
+        return Status(StatusCode::KeyNotExist);
+    }
+
     bool Status::is_ok() const
     {
         return code_ == StatusCode::Ok;
@@ -138,6 +143,11 @@ namespace easy_db
     bool Status::is_invalid_argument() const
     {
         return code_ == StatusCode::InvalidArgument;
+    }
+
+    bool Status::is_key_not_exist() const
+    {
+        return code_ == StatusCode::KeyNotExist;
     }
 
 }
