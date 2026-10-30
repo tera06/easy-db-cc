@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(easy_db 
     src/common/status.cc
+    src/database/row.cc
     src/page/page.cc
     src/page/page_manager.cc
     src/btree/node.cc
@@ -28,6 +29,7 @@ add_executable(easy_db_test
     tests/main.cc
     tests/common/status_test.cc
     tests/common/result_test.cc
+    tests/database/row_test.cc
     tests/page/page_test.cc
     tests/page/page_manager_test.cc
     tests/btree/node_test.cc

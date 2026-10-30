@@ -5,7 +5,7 @@ namespace easy_db
     class LeafNode : public Node
     {
     private:
-        static constexpr std::size_t kValueSize = 293;
+        static constexpr std::size_t kValueSize = 291;
 
     public:
         using num_cells_t = uint32_t;
