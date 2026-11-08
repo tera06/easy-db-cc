@@ -6,7 +6,7 @@ namespace easy_db
 {
     PageManager::PageManager(const std::string &filename) : filename_(filename)
     {
-        auto result_num_pages = get_num_pages();
+        auto result_num_pages = num_pages();
         if (result_num_pages.is_ok())
         {
             next_page_id_ = result_num_pages.value();
@@ -124,7 +124,7 @@ namespace easy_db
         return Result<void>::ok();
     }
 
-    Result<PageManager::num_pages_t> PageManager::get_num_pages()
+    Result<PageManager::num_pages_t> PageManager::num_pages()
     {
         std::filesystem::path file_path = filename_;
         if (!std::filesystem::exists(file_path))
@@ -142,4 +142,5 @@ namespace easy_db
         auto num_pages = filesize / Page::kPageSize;
         return Result<PageManager::num_pages_t>::ok(num_pages);
     }
+
 }

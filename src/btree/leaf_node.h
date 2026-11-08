@@ -1,3 +1,6 @@
+#ifndef EASY_DB_LEAF_NODE_H_
+#define EASY_DB_LEAF_NODE_H_
+
 #include "page/page.h"
 #include "node.h"
 namespace easy_db
@@ -12,6 +15,9 @@ namespace easy_db
         using key_t = uint32_t;
         using cell_num_t = uint32_t;
         using value_t = std::array<std::byte, kValueSize>;
+        static constexpr std::size_t kMaxCells =
+            (Page::kPageSize - (kCommonHeaderSize + sizeof(num_cells_t) + sizeof(PageManager::page_id_t))) /
+            (sizeof(key_t) + kValueSize);
 
         explicit LeafNode(Page &page) : Node(page) {}
 
@@ -38,8 +44,9 @@ namespace easy_db
         static constexpr std::size_t kValueOffset = kKeyOffset + kKeySize;
         static constexpr std::size_t kCellSize = kKeySize + kValueSize;
         static constexpr std::size_t kSpaceForCells = Page::kPageSize - kHeaderSize;
-        static constexpr std::size_t kMaxCells = kSpaceForCells / kCellSize;
         static constexpr std::size_t kRightSplitCount = (kMaxCells + 1) / 2;
         static constexpr std::size_t kLeftSplitCount = (kMaxCells + 1) - kRightSplitCount;
     };
 }
+
+#endif

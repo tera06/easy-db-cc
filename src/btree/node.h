@@ -1,3 +1,6 @@
+#ifndef EASY_DB_BTREE_NODE_H_
+#define EASY_DB_BTREE_NODE_H_
+
 #include "page/page.h"
 #include "page/page_manager.h"
 
@@ -31,3 +34,5 @@ namespace easy_db
         static constexpr std::size_t kCommonHeaderSize = kNodeTypeSize + kIsRootSize + kParentNodeIdSize;
     };
 }
+
+#endif

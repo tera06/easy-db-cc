@@ -53,12 +53,17 @@
     - btree SubDirectory
         - Btree Class
             - public
-                - Status insert(Value&);
-                - Result\<std::vector\<std::unique_ptr<Value\>
-                \>\> get_all();
-                - using Value = std::array<std::byte, size> 
+                - Btree(const std::string& filename);
+                - Result\<void\> initialize();
+                - Result\<void\> insert(key_t key, const value_t& value);
+                - Result\<value_t\> find(key_t key) const;
+                - Result\<std::vector\<value_t\>\> get_all() const;
+                - Result\<void\> flush();
+                - using key_t = LeafNode::key_t;
+                - using value_t = LeafNode::value_t;
             - private
-                - std::unique<PageManager>  page_manager_;
+                - std::unique_ptr\<PageManager\> page_manager_;
+                - PageManager::page_id_t root_page_id_;
         - LeafNode Class
             - public
                 - page_内部のgetter及びsetter
@@ -91,7 +96,6 @@
 
 
     
-
 
 
 

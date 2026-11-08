@@ -15,6 +15,7 @@ namespace easy_db
         using child_id_t = PageManager::page_id_t;
         using cell_num_t = uint32_t;
         using max_cells_t = uint32_t;
+        static constexpr max_cells_t kMaxCells = 3;
 
         explicit InternalNode(Page &page) : Node(page) {}
 
@@ -41,7 +42,6 @@ namespace easy_db
         static constexpr std::size_t kKeySize = sizeof(key_t);
         static constexpr std::size_t kKeyOffset = kChildOffset + kChildSize;
         static constexpr std::size_t kCellSize = kChildSize + kKeySize;
-        static constexpr max_cells_t kMaxCells = 3;
     };
 }
 

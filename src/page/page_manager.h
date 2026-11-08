@@ -1,3 +1,6 @@
+#ifndef EASY_DB_PAGE_MANAGER_H_
+#define EASY_DB_PAGE_MANAGER_H_
+
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -25,12 +28,13 @@ namespace easy_db
         Result<page_id_t> create_new_page();
         Result<Page &> get_page(const page_id_t page_id);
         Result<void> flush(const page_id_t page_id);
+        Result<num_pages_t> num_pages();
 
     private:
         const std::string filename_;
         page_id_t next_page_id_;
         std::unordered_map<page_id_t, std::unique_ptr<Page>> pages_;
-
-        Result<num_pages_t> get_num_pages();
     };
 }
+
+#endif

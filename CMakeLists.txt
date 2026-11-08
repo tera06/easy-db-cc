@@ -13,6 +13,7 @@ add_library(easy_db
     src/page/page_manager.cc
     src/btree/node.cc
     src/btree/leaf_node.cc
+    src/btree/btree.cc
    src/btree/internal_node.cc
 )
 
@@ -33,6 +34,7 @@ add_executable(easy_db_test
     tests/page/page_test.cc
     tests/page/page_manager_test.cc
     tests/btree/node_test.cc
+    tests/btree/btree_test.cc
    tests/btree/leaf_node_test.cc
    tests/btree/internal_node_test.cc
 )
