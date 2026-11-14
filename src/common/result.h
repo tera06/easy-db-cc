@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 #include "status.h"
 namespace easy_db
@@ -48,6 +49,11 @@ namespace easy_db
         static Result ok(const T &value)
         {
             return Result(Status::ok(), std::make_unique<T>(value));
+        }
+
+        static Result ok(T &&value)
+        {
+            return Result(Status::ok(), std::make_unique<T>(std::move(value)));
         }
 
         static Result
