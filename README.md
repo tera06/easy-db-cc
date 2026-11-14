@@ -41,15 +41,15 @@
             - static Result\<std::unique_ptr\<Table\>\> open(const String&);
     - Table Class
         - public
-            - Status insert(const Row&)
-            - vector<Row&> select_all()
+            - Result<void> initialize();
+            - Result<void> insert(const Row&);
+            - Result<vector<Row>> select_all();
+            - Result<void> flush();
         - private
             - std::unique_ptr\<Btree\> btree_;
     - Row Class
         - public
-            - const uint32_t id;
-            - const std::string username;
-            - const std::string email;
+            - id_t get_id() const;
     - btree SubDirectory
         - Btree Class
             - public
@@ -96,7 +96,6 @@
 
 
     
-
 
 
 

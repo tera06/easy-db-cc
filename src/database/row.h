@@ -28,6 +28,7 @@ namespace easy_db
             std::string username,
             std::string email);
 
+        id_t get_id() const;
         Result<row_serialized_t> serialize() const;
         static Result<Row> deserialize(const row_serialized_t &row_serialized);
 

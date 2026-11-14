@@ -10,6 +10,11 @@ namespace easy_db
     {
     }
 
+    Row::id_t Row::get_id() const
+    {
+        return id;
+    }
+
     Result<Row> Row::create(
         id_t id,
         std::string username,
