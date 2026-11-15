@@ -1,104 +1,157 @@
-# Software Design
-# Class Design
-- repl Directory
-    - Repl Class
-        - public
-            - Status start();
-        - private
-            - Status print_prompt();
-            - Result\<UserInput\> read_user_input();
-            - Status print_user_output(UserOutput&);
-            - using UserInput = std::string;
-            - using UserOutput = std::string;
+# easy-db
 
+`easy-db` is a small database project written in C++17. It is inspired by
+[cstack/db_tutorial](https://github.com/cstack/db_tutorial), which builds a
+small SQLite-like database to demonstrate how database components fit
+together. This project is intended for learning and experimentation; it is
+not a production database.
 
-- command Directory
-    - Command Class
-        - public
-            - Result\<CommandResult\> execute(const UserCommand&);
-            - using UserCommand = std::string;
-            - using  CommandResult= std::string;
-        - private
-            CommandParser parser_;
-            CommandExecutor executor_;
-            
-    - CommandParser Class
-        - public
-            -  Result\<std::unique_ptr\<CommandStatement\>\> parse(const ParseTarget&)
-            - using ParseTarget = std::string;
-    - CommandExecutor Class
-        - public
-            - Result\<CommandResult\> execute(const CommandStatement&)
-            - using CommandResult = std::string;
-    - CommandStatement Class
-        - public
-            - enum Class StatementType statement_type_;
-            - Row insert_row;
+## Features
 
-The command layer currently supports `INSERT <id> <username> <email>` and
-`SELECT` (or `SELECT *`). `Command` is constructed with an initialized `Table`
-and returns command output as a string.
+- Fixed-size rows with an unsigned 32-bit integer primary key
+- A disk-backed B-tree with leaf and internal nodes
+- A command-line REPL
+- `INSERT` and full-table `SELECT` commands
+- Persistence across process restarts
+- Unit tests for the storage, database, command, and REPL layers
 
-- database Directory
-    - Database Class
-        - public
-            - static Result\<std::unique_ptr\<Table\>\> open(const String&);
-    - Table Class
-        - public
-            - Result<void> initialize();
-            - Result<void> insert(const Row&);
-            - Result<vector<Row>> select_all();
-            - Result<void> flush();
-        - private
-            - std::unique_ptr\<Btree\> btree_;
-    - Row Class
-        - public
-            - id_t get_id() const;
-    - btree SubDirectory
-        - Btree Class
-            - public
-                - Btree(const std::string& filename);
-                - Result\<void\> initialize();
-                - Result\<void\> insert(key_t key, const value_t& value);
-                - Result\<value_t\> find(key_t key) const;
-                - Result\<std::vector\<value_t\>\> get_all() const;
-                - Result\<void\> flush();
-                - using key_t = LeafNode::key_t;
-                - using value_t = LeafNode::value_t;
-            - private
-                - std::unique_ptr\<PageManager\> page_manager_;
-                - PageManager::page_id_t root_page_id_;
-        - LeafNode Class
-            - public
-                - page_内部のgetter及びsetter
-            - private
-                - const Page& page_;
-        - InternalNode Class
-            - public
-                - page_内部のgetter及びsetter
-            - private 
-                - const Page& page_;
-    - page SubDirectory
-        - PageManager Class
-            - public
-                - using PageId = std::uint32_t;
-                - Result<Page&>　get_page(PageId);
-                - Status flush(PageId);
-            - private
-                - const std::string filename;
-                - std::vector\<std::unique_ptr\<Page\>\> pages;
-        - Page Class
-            - public 
-                - std::array<std::byte, size> data_;
+## Architecture
 
-- Status Directory
-    - Status Class
-        - bool is_ok();
-        - bool is_err();
-    - template \<typename T \> using Result = std::pair<T, Status>
+The implementation is divided into layers:
 
+```text
+main
+  └── Repl
+        └── Command
+              ├── CommandParser
+              ├── CommandStatement
+              └── CommandExecutor
+                    └── Table
+                          └── Btree
+                                ├── InternalNode / LeafNode
+                                └── PageManager
+                                      └── Page
+```
 
+`Row` is the fixed-size record representation used by `Table`. `Database`
+provides an API for opening and initializing a `Table`. `Status` and
+`Result<T>` carry errors and return values across layers.
 
-    
+- **REPL and command layer** — Reads commands, parses them into statements,
+  executes them, and formats the output.
+- **Database layer** — `Row` validates and serializes records. `Table` stores
+  rows using their IDs as B-tree keys. `Database::open()` is a convenience API
+  for opening and initializing a table.
+- **B-tree layer** — Manages key/value insertion, lookup, ordered scans, and
+  node splits. Leaf nodes store serialized row values; internal nodes route
+  searches.
+- **Page layer** — `Page` represents a 4096-byte page. `PageManager` loads,
+  caches, allocates, and flushes pages to the database file.
+- **Error handling** — Operations return `Status` or `Result<T>` instead of
+  using exceptions for normal error reporting.
 
+## Build
 
+Requirements:
+
+- CMake 3.16 or later
+- A C++17 compiler
+- CppUTest (required to configure the project and build its test target)
+
+Configure and build from the repository root:
+
+```sh
+cmake -S . -B build
+cmake --build build
+```
+
+The CLI executable is created at `build/easy_db`.
+
+## Run
+
+Pass the database file path as the only argument:
+
+```sh
+./build/easy_db my_database.db
+```
+
+The REPL displays a `>` prompt. Example session:
+
+```text
+> INSERT 1 alice alice@example.com
+Inserted row 1
+> INSERT 2 bob bob@example.com
+Inserted row 2
+> SELECT
+1, alice, alice@example.com
+2, bob, bob@example.com
+> quit
+```
+
+`exit` and `quit` both leave the REPL. Inserted rows are flushed to the
+database file, so they can be read in a later invocation:
+
+```sh
+./build/easy_db my_database.db
+```
+
+## Supported commands
+
+| Command | Description |
+|---|---|
+| `INSERT <id> <username> <email>` | Insert a row, or replace the row with the same ID. |
+| `SELECT` | Display all rows ordered by ID. |
+| `SELECT *` | Same as `SELECT`. |
+| `exit` / `quit` | Exit the REPL. |
+
+Command names are case-insensitive. Values are whitespace-delimited; usernames
+and email addresses cannot contain spaces. IDs are unsigned 32-bit integers.
+Usernames are limited to 32 bytes and email addresses to 255 bytes. Rows have a
+fixed serialized size.
+
+## Run tests
+
+```sh
+ctest --test-dir build --output-on-failure
+```
+
+## Current scope and limitations
+
+- The SQL-like command syntax is intentionally small; `CREATE`, `UPDATE`,
+  `DELETE`, filters, and multi-row statements are not implemented.
+- The database API currently exposes one table per database file.
+- `SELECT` materializes all rows in memory; there is no incremental cursor API.
+- Transactions, rollback, concurrent access, and crash recovery are not
+  implemented.
+- The on-disk format is a project-specific binary format and should be treated
+  as experimental. Compatibility between future versions is not guaranteed.
+
+## Suggested next steps
+
+Potential areas to extend the project:
+
+1. Improve REPL shutdown and error reporting, including clean handling of
+   end-of-file and stream failures.
+2. Add lookup by primary key at the `Table` and command layers.
+3. Add a cursor or iterator for scanning large tables without loading every
+   row into memory.
+4. Add schema and catalog metadata to support multiple tables and column
+   definitions.
+5. Add `UPDATE`, `DELETE`, and basic `WHERE` expressions.
+6. Define and document an explicit on-disk format/versioning policy, then add
+   integrity checks and recovery behavior.
+7. Add transaction support and define the durability guarantees of commits.
+
+## Project layout
+
+```text
+src/
+  btree/      B-tree and node implementations
+  command/    Command parsing, statements, and execution
+  common/     Status and Result types
+  database/   Row, Table, and Database APIs
+  page/       Page storage and file-backed page manager
+  repl/       Interactive command loop
+  main.cc     CLI entry point
+tests/        Unit tests organized by component
+```
