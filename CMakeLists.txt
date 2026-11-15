@@ -20,12 +20,24 @@ add_library(easy_db
     src/btree/node.cc
     src/btree/leaf_node.cc
     src/btree/btree.cc
-   src/btree/internal_node.cc
+    src/btree/internal_node.cc
+    src/repl/repl.cc
 )
 
 target_include_directories(easy_db
     PUBLIC
         ${PROJECT_SOURCE_DIR}/src
+)
+
+add_executable(easy_db_cli
+    src/main.cc
+)
+
+set_target_properties(easy_db_cli PROPERTIES OUTPUT_NAME easy_db)
+
+target_link_libraries(easy_db_cli
+    PRIVATE
+        easy_db
 )
 
 enable_testing()
@@ -44,8 +56,9 @@ add_executable(easy_db_test
     tests/page/page_manager_test.cc
     tests/btree/node_test.cc
     tests/btree/btree_test.cc
-   tests/btree/leaf_node_test.cc
-   tests/btree/internal_node_test.cc
+    tests/btree/leaf_node_test.cc
+    tests/btree/internal_node_test.cc
+    tests/repl/repl_test.cc
 )
 
 target_link_libraries(easy_db_test
