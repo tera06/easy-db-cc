@@ -15,6 +15,16 @@ namespace easy_db
         return id;
     }
 
+    const std::string &Row::get_username() const
+    {
+        return username;
+    }
+
+    const std::string &Row::get_email() const
+    {
+        return email;
+    }
+
     Result<Row> Row::create(
         id_t id,
         std::string username,

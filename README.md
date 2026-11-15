@@ -28,12 +28,16 @@
             - using ParseTarget = std::string;
     - CommandExecutor Class
         - public
-            -  Result\<std::unique_ptr\<CommandResult\>\> execute(const CommandStatement&)
-            - using CommandResult = std::stirng;
+            - Result\<CommandResult\> execute(const CommandStatement&)
+            - using CommandResult = std::string;
     - CommandStatement Class
         - public
             - enum Class StatementType statement_type_;
             - Row insert_row;
+
+The command layer currently supports `INSERT <id> <username> <email>` and
+`SELECT` (or `SELECT *`). `Command` is constructed with an initialized `Table`
+and returns command output as a string.
 
 - database Directory
     - Database Class
@@ -96,6 +100,5 @@
 
 
     
-
 
 

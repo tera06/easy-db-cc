@@ -7,6 +7,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_library(easy_db 
+    src/command/command.cc
+    src/command/command_executor.cc
+    src/command/command_parser.cc
+    src/command/command_statement.cc
     src/common/status.cc
     src/database/row.cc
     src/database/database.cc
@@ -30,6 +34,7 @@ find_package(CppUTest REQUIRED)
 
 add_executable(easy_db_test
     tests/main.cc
+    tests/command/command_test.cc
     tests/common/status_test.cc
     tests/common/result_test.cc
     tests/database/row_test.cc
